@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebook } from '@fortawesome/free-brands-svg-icons';
-
+import { Link } from 'react-router-dom'; 
 
 function Login() {
     const [email, setEmail] = useState('');
@@ -63,11 +63,11 @@ function Login() {
 
     return (
         <>
-            <div className="container-fluid" style={{ background: 'linear-gradient(to top right, rgb(250, 252, 253), rgb(192, 197, 196), rgb(150, 210, 193)' }}>
+            <div className="container-fluid">
                 <div className="row justify-content-center">
                     <div className="col-md-6">
                         <div className="text-center">
-                            <h1>Accedi a REadCycle!</h1>
+                            <h1>Accedi a BookShare!</h1>
                             <br /> <br />
                             <button className="btn btn-primary btn-lg w-100" onClick={handleFacebookLogin}>
                                 <FontAwesomeIcon icon={faFacebook} className="mr-2" /> Accedi con Facebook
@@ -101,7 +101,7 @@ function Login() {
                             </div>
                             {errorMessage && <div className="alert alert-danger" role="alert">{errorMessage}</div>}
                             <div className="text-center">
-                                <button type="submit" className="btn btn-secondary btn-lg w-100">Accedi</button><br /><br /><br />
+                                <button type="submit" className="btn btn-success btn-lg w-100">Accedi</button><br /><br /><br />
                             </div>
 
                         </form>
@@ -114,7 +114,9 @@ function Login() {
                 <div>
                     <span>Non hai un account? </span>
 
-                    <button className="btn btn-link" onClick={handleRegister}>Registrati</button>
+                   {/* <button className="btn btn-link" onClick={handleRegister}>Registrati</button> */}
+                   <Link to="/Registrazione" className="btn btn-link">Registrati</Link>
+
                     <br />
                 </div>
 

@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './assets/components/Login';
 import HomePage from './assets/components/HomePage';
 import Registrazione from './assets/components/Registrazione';
+import BookList from './assets/components/BookList';
+import "bootstrap/dist/css/bootstrap.min.css";
 
 
 function App() {
@@ -13,7 +15,8 @@ function App() {
           <Route>
             <Route exact path="/" element={<HomePage />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/registrazione" element={<Registrazione />} />
+            <Route path="/Registrazione" element={<Registrazione />} />
+            <Route path='/BookList' element = {<BookList/>}/>
           </Route>
         </Routes>
       </Router>

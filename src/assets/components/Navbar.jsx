@@ -1,28 +1,30 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 function Navbar() {
     return (
-        <nav className="navbar navbar-expand-lg navbar-light bg-primary">
-            <div className="container fluid">
-                <a className="navbar-brand" href="index.html"><img src="icon.png" alt="Logo" width="80px" /> </a>
-                <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <nav className="navbar navbar-expand-lg navbar-light bg-light">
+            <div className="container">
+                <Link className="navbar-brand" to="/">BookShare</Link>
+                <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
                 </button>
-                <div className="collapse navbar-collapse" id="navbarNav">
-                    <ul className="navbar-nav ms-auto">
+                <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                         <li className="nav-item">
-                            <a className="nav-link active" aria-current="page" href="index.html">Home</a>
+                            <Link className="nav-link active" to="/">Home</Link>
                         </li>
                         <li className="nav-item">
-                            <a className="nav-link" href="#">I miei libri</a>
+                            <Link className="nav-link" to="/about">Chi Siamo</Link>
                         </li>
                         <li className="nav-item">
-                            <a className="nav-link" href="#">Services</a>
-                        </li>
-                        <li className="nav-item">
-                            <a className="nav-link" href="#">Contact</a>
+                            <Link className="nav-link" to="/contact">Contact</Link>
                         </li>
                     </ul>
+                    <div className="d-flex">
+                        <Link className="btn btn-outline-success me-2" to="/login">Sign In</Link>
+                        <Link className="btn btn-success" to="/registrazione">Sign Up</Link>
+                    </div>
                 </div>
             </div>
         </nav>
@@ -30,4 +32,3 @@ function Navbar() {
 }
 
 export default Navbar;
-
