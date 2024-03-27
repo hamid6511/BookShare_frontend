@@ -47,8 +47,7 @@ function Login() {
     };
 
     const handleForgotPassword = () => {
-        // Implementa la logica per il ripristino della password
-        console.log('Forgot password clicked');
+        navigate('/forgot-password');
     };
 
     const handleRegister = () => {
