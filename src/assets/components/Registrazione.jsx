@@ -1,18 +1,4 @@
 import React, { useState } from 'react';
-<<<<<<< HEAD
-import axios from 'axios';
-import Footer from './Footer';
-import Navbar from './Navbar';
-import { useNavigate } from 'react-router-dom';
-
-
-function Registrazione() {
-    const currentYear = new Date().getFullYear();
-    const [username, setUsername] = useState('');
-    const [password,setPassword] = useState('');
-    const[email,setEmail]=useState('');
-    const [message,setMessage] = useState('');
-=======
 import { useNavigate } from 'react-router-dom';
 
 function Registrazione() {
@@ -103,59 +89,22 @@ function Registrazione() {
             setErrorMessage('Errore durante la registrazione. Si prega di riprovare.');
         }
     };
->>>>>>> 8c45a1e4156331de69b4b1c33120ee76e6adf3a2
 
-    const handleSubmit = async (e) =>{
-        e.preventDefault();
-        try{
-            const response = await axios.post('myendpointApi',{
-                username : username,
-                password : password,
-                email:email
-            });
-            setMessage(response.data.message);
-        }catch(error){
-            setMessage('Registrazione falito. Prego riprova di nuovo');
-        }
-    };
+    // const handleSubmit = async (e) =>{
+    //     e.preventDefault();
+    //     try{
+    //         const response = await axios.post('myendpointApi',{
+    //             username : username,
+    //             password : password,
+    //             email:email
+    //         });
+    //         setMessage(response.data.message);
+    //     }catch(error){
+    //         setMessage('Registrazione falito. Prego riprova di nuovo');
+    //     }
+    // };
   
     return (
-<<<<<<< HEAD
-        <>
-        <Navbar/>
-        <div className="container-fluid">
-            <div className="row justify-content-center mt-5">
-                <div className="col-md-6">
-                    <div className="card">
-                    <div className="card text-center">
-                        <div className="card-header bg-success text-white">Registrati</div>
-                        </div>
-                        <div className="card-body">
-                            <form onSubmit={handleSubmit}>
-                                <div className="mb-3">
-                                    <label className="form-label">Username:</label>
-                                    <input type="text" className="form-control" value={username} onChange={(e) => setUsername(e.target.value)} required />
-                                </div>
-                                <div className="mb-3">
-                                    <label className="form-label">Password:</label>
-                                    <input type="password" className="form-control" value={password} onChange={(e) => setPassword(e.target.value)} required />
-                                </div>
-                                <div className="mb-3">
-                                    <label className="form-label">Email:</label>
-                                    <input type="email" className="form-control" value={email} onChange={(e) => setEmail(e.target.value)} required />
-                                </div>
-                                <button type="submit" className="btn btn-success btn-lg w-100">Register</button>
-                            </form>
-                            {message && <p className="mt-3">{message}</p>}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <Footer />
-        </>
-=======
         <div className="container-fluid">
             <div className="row">
                 <div className="col-md-6 position-relative" style={{ backgroundImage: `url('registratiIMG.jpg')`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
@@ -240,7 +189,6 @@ function Registrazione() {
             </div>
             {redirectToLogin && <Redirect to="/login" />}
         </div>
->>>>>>> 8c45a1e4156331de69b4b1c33120ee76e6adf3a2
     );
     
      
@@ -255,12 +203,4 @@ function Registrazione() {
 //         </footer>
 //         </>
 
-<<<<<<< HEAD
-      
-//     );
-// }
-
 export default Registrazione;
-=======
-export default Registrazione;
->>>>>>> 8c45a1e4156331de69b4b1c33120ee76e6adf3a2
