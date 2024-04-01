@@ -41,7 +41,7 @@ function ForgotPassword() {
     }
 
     return (
-        <div className="container">
+        <div className="container-fluid " style={{ marginTop: '10%' }}>
             <div className="row justify-content-center">
                 <div className="col-md-6">
                     <div className="card shadow-sm">

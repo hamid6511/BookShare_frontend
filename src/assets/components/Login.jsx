@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebook } from '@fortawesome/free-brands-svg-icons';
-import { Link } from 'react-router-dom'; 
 
 function Login() {
     const [email, setEmail] = useState('');
@@ -20,7 +19,7 @@ function Login() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-
+        navigate('/user-home');// questo è solo per prova da togliere dopo
         try {
             const response = await fetch('URL_DEL_TUO_BACKEND/login', {
                 method: 'POST',
@@ -32,7 +31,7 @@ function Login() {
 
             if (response.ok) {
                 // Login riuscito, esegui azioni post-login
-                console.log('Login successful');
+                navigate('/user_Home');
                 setErrorMessage('');
                 // Qui puoi aggiungere la navigazione alla tua dashboard o a una pagina successiva
             } else {
@@ -51,7 +50,6 @@ function Login() {
     };
 
     const handleRegister = () => {
-
         navigate('/registrazione');
     };
 
@@ -62,17 +60,17 @@ function Login() {
 
     return (
         <>
-            <div className="container-fluid">
+            <div className="container-fluid mt-5" style={{ background: 'linear-gradient(to top right, rgb(250, 252, 253), rgb(192, 197, 196), rgb(150, 210, 193)', maxHeight: '80vh' }}>
                 <div className="row justify-content-center">
                     <div className="col-md-6">
-                        <div className="text-center">
-                            <h1>Accedi a BookShare!</h1>
+                        <div className="text-center"><br /> <br />
+                            <h1>Accedi a REadCycle!</h1>
                             <br /> <br />
                             <button className="btn btn-primary btn-lg w-100" onClick={handleFacebookLogin}>
                                 <FontAwesomeIcon icon={faFacebook} className="mr-2" /> Accedi con Facebook
                             </button>
                             <br /> <br />
-                            <p className="lead">Oppure<br /><br /></p>
+                            <p className="lead">Oppure<br /></p>
                         </div>
 
                         <form onSubmit={handleSubmit}>
@@ -102,24 +100,15 @@ function Login() {
                             <div className="text-center">
                                 <button type="submit" className="btn btn-success btn-lg w-100">Accedi</button><br /><br /><br />
                             </div>
-
                         </form>
-
                     </div>
                 </div>
             </div>
             <div className="mt-3 text-center">
-
                 <div>
                     <span>Non hai un account? </span>
-
-                   {/* <button className="btn btn-link" onClick={handleRegister}>Registrati</button> */}
-                   <Link to="/Registrazione" className="btn btn-link">Registrati</Link>
-
-                    <br />
+                    <button className="btn btn-link" onClick={handleRegister}>Registrati</button>
                 </div>
-
-
             </div>
         </>
     );

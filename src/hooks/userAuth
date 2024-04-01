@@ -1,0 +1,31 @@
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+
+function useAuth() {
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+    useEffect(() => {
+        // Funzione per verificare se l'utente è autenticato
+        const checkAuthentication = async () => {
+            try {
+                // Invia una richiesta al backend per verificare lo stato di autenticazione dell'utente
+                const response = await axios.get('/api/auth/check-auth', {
+                    withCredentials: true,  // Assicurati di includere i cookie nella richiesta
+                });
+
+                // Se la richiesta ha avuto successo e l'utente è autenticato, imposta isAuthenticated a true
+                setIsAuthenticated(response.data.isAuthenticated);
+            } catch (error) {
+                // Se si verifica un errore durante la richiesta, gestiscilo qui
+                console.error('Errore durante la verifica dell\'autenticazione:', error);
+            }
+        };
+
+        // Chiama la funzione di verifica dell'autenticazione al caricamento della pagina
+        checkAuthentication();
+    }, []);
+
+    return { isAuthenticated };
+}
+
+export default useAuth;

@@ -7,6 +7,8 @@ import Registrazione from './assets/components/Registrazione';
 import BookList from './assets/components/BookList';
 import SuccessfulReset from './assets/components/SuccessfulReset'
 import ResetPassword from './assets/components/ResetPassword';
+import BookCard from './assets/components/BookCard';
+import UserHome from './assets/user/Home';
 import "bootstrap/dist/css/bootstrap.min.css";
 
 
@@ -19,10 +21,12 @@ function App() {
             <Route exact path="/" element={<HomePage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/Registrazione" element={<Registrazione />} />
-            <Route path='/BookList' element = {<BookList/>}/>
+            <Route path='/BookList' element={<BookList />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/successful-reset" element={<SuccessfulReset />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/card" element={<BookCard />} />
+            <Route path="/user-home" element={<UserHome />} />
           </Route>
         </Routes>
       </Router>
