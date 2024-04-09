@@ -78,9 +78,8 @@ function Registrazione() {
 
             if (response.ok) {
                 console.log('Registrazione riuscita');
-                navigate('/login'); // Reindirizza alla pagina di login dopo la registrazione
+                navigate('/login');
             } else {
-                // Registrazione non riuscita, mostra un messaggio di errore
                 const errorData = await response.json();
                 setErrorMessage(errorData.message);
             }
@@ -90,20 +89,8 @@ function Registrazione() {
         }
     };
 
-    // const handleSubmit = async (e) =>{
-    //     e.preventDefault();
-    //     try{
-    //         const response = await axios.post('myendpointApi',{
-    //             username : username,
-    //             password : password,
-    //             email:email
-    //         });
-    //         setMessage(response.data.message);
-    //     }catch(error){
-    //         setMessage('Registrazione falito. Prego riprova di nuovo');
-    //     }
-    // };
-  
+
+
     return (
         <div className="container-fluid">
             <div className="row">
@@ -116,7 +103,7 @@ function Registrazione() {
                 </div>
                 <div className="col-md-6" style={{ background: 'linear-gradient(to top right, rgb(250, 252, 253), rgb(192, 197, 196), rgb(150, 210, 193))' }}>
                     <div className="container">
-                        <br /><br /><h1 className="text-center">Registrati su REadCycle</h1><br />
+                        <br /><h1 className="text-center">Registrati su REadCycle</h1><br />
 
                         <div className="text-center mb-3">
                             <span>Hai già un account? </span>
@@ -137,6 +124,28 @@ function Registrazione() {
                             </div>
                             <div className="mb-3">
                                 <label htmlFor="lastName" className="form-label">Cognome</label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    id="lastName"
+                                    value={lastName}
+                                    onChange={handleLastNameChange}
+                                    required
+                                />
+                            </div>
+                            <div className="mb-3">
+                                <label htmlFor="lastName" className="form-label">Comune di residenza</label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    id="lastName"
+                                    value={lastName}
+                                    onChange={handleLastNameChange}
+                                    required
+                                />
+                            </div>
+                            <div className="mb-3">
+                                <label htmlFor="lastName" className="form-label">Provincia di residenza</label>
                                 <input
                                     type="text"
                                     className="form-control"
@@ -190,10 +199,10 @@ function Registrazione() {
             {redirectToLogin && <Redirect to="/login" />}
         </div>
     );
-    
-     
+
+
 }
-    
+
 //         <>
 //           di
 //            <footer className="bg-dark text-white text-center py-4">

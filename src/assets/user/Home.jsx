@@ -1,42 +1,122 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-//import './HomePage.css'; // Stili per la HomePage
+import React, { useState, useEffect } from 'react';
+import { Container, Row, Col, Button, Card, Carousel } from 'react-bootstrap';
+import Search from "../components/Search";
+import Footer from "../components/Footer";
 import Menu from './Menu';
+import BookCard from "../components/BookCard";
 
-function HomePage() {
+function Home() {
+  const [latestBooks, setLatestBooks] = useState([]);
+  const [featuredBooks, setFeaturedBooks] = useState([]);
+
+  // Funzione per caricare gli ultimi libri dal backend
+  const fetchLatestBooks = async () => {
+    try {
+      const response = await fetch("http://localhost:5199/api/Book/Get-All-Books"); // Modificare l'URL dell'API dopo
+      if (!response.ok) {
+        throw new Error('Errore durante il recupero degli ultimi libri');
+      }
+      const data = await response.json();
+      setLatestBooks(data);
+    } catch (error) {
+      console.error('Errore:', error);
+    }
+  };
+
+  // Funzione per caricare i libri in evidenza dal backend
+  const fetchFeaturedBooks = async () => {
+    try {
+      const response = await fetch("http://localhost:5199/api/Book/Get-All-Books"); // Modificare l'URL dell'API dopo
+      if (!response.ok) {
+        throw new Error('Errore durante il recupero dei libri in evidenza');
+      }
+      const data = await response.json();
+      setFeaturedBooks(data);
+    } catch (error) {
+      console.error('Errore:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchLatestBooks();
+    fetchFeaturedBooks();
+  }, []);
+
   return (
-    <div className="homepage">
-      <Menu />
-      <header className="hero">
-        <div className="container text-center">
-          <h1>Discover New Worlds</h1>
-          <p>Share and exchange books with other readers</p>
-          <Link to="/books" className="btn btn-primary btn-lg">Explore Books</Link>
-        </div>
-      </header>
-
-      <section className="features">
-        <div className="container">
-          <div className="row">
-            <div className="col-md-4">
-              <h2>Find Your Next Read</h2>
-              <p>Explore a wide range of books in various genres.</p>
-            </div>
-            <div className="col-md-4">
-              <h2>Connect with Readers</h2>
-              <p>Join communities, discuss books, and make new friends.</p>
-            </div>
-            <div className="col-md-4">
-              <h2>Share Your Favorites</h2>
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-
+    <div>
+      <Menu isUser={true} />
+      <div className="container-fluid bg-transparent py-5">
+        <Container>
+          <Row className="align-items-center">
+            <Col md={6} className="text-center text-md-start mb-5">
+              <h1 className="display-4">Benvenuto su REadCycle</h1>
+              <p className="lead mb-4">Scambia i tuoi libri con altri utenti e scopri nuovi titoli!</p>
+            </Col>
+            <Col md={6} className="text-center">
+              <Carousel>
+                <Carousel.Item>
+                  <img className="d-block w-100 rounded-circle" src="/comunity.jpg" alt="Esplora Nuovi Mondi" />
+                  <Carousel.Caption>
+                    <h3>Esplora Nuovi Mondi</h3>
+                    <p>Scopri libri che ti porteranno in viaggi emozionanti e avventure indimenticabili.</p>
+                  </Carousel.Caption>
+                </Carousel.Item>
+                <Carousel.Item>
+                  <img className="d-block w-100 rounded-circle" src="/stories.jpg" alt="Entra nei Racconti" />
+                  <Carousel.Caption>
+                    <h3>Entra nei Racconti</h3>
+                    <p>Immergiti in storie coinvolgenti e lasciati trasportare dall'immaginazione.</p>
+                  </Carousel.Caption>
+                </Carousel.Item>
+                <Carousel.Item>
+                  <img className="d-block w-100 rounded-circle" src="/share_your_books.jpg" alt="Condividi le Tue Passioni" />
+                  <Carousel.Caption>
+                    <h3>Condividi le Tue Passioni</h3>
+                    <p>Trova persone con interessi simili e condividi le tue passioni letterarie con il mondo.</p>
+                  </Carousel.Caption>
+                </Carousel.Item>
+              </Carousel>
+            </Col>
+          </Row>
+          <hr className="my-5" />
+          <Row className="mb-5">
+            <Col>
+              <h2 className="mb-4">Ultime Aggiunte</h2>
+              <p className="text-muted mb-4">Scopri gli ultimi libri aggiunti alla nostra piattaforma.</p>
+              <Row xs={1} md={2} lg={3} className="g-4">
+                {latestBooks.map(book => (
+                  <Col key={book.id}>
+                    <BookCard book={book} showContact={true} />
+                  </Col>
+                ))}
+              </Row>
+            </Col>
+          </Row>
+          <Row className="mb-5">
+            <Col>
+              <h2 className="mb-4">Libri in Evidenza</h2>
+              <p className="text-muted mb-4">Scopri i libri più popolari e consigliati dalla nostra comunità.</p>
+              <Row xs={1} md={2} lg={3} className="g-4">
+                {featuredBooks.map(book => (
+                  <Col key={book.id}>
+                    <BookCard book={book} showContact={true} />
+                  </Col>
+                ))}
+              </Row>
+            </Col>
+          </Row>
+          <Row className="mb-5">
+            <Col>
+              <h2 className="mb-4">Cerca nella tua zona</h2>
+              <Search />
+            </Col>
+          </Row>
+        </Container>
+      </div>
+      <br /><br /><br /><br />
+      <Footer />
     </div>
   );
 }
 
-export default HomePage;
+export default Home;

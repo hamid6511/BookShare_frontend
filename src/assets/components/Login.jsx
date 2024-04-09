@@ -30,12 +30,9 @@ function Login() {
             });
 
             if (response.ok) {
-                // Login riuscito, esegui azioni post-login
                 navigate('/user_Home');
                 setErrorMessage('');
-                // Qui puoi aggiungere la navigazione alla tua dashboard o a una pagina successiva
             } else {
-                // Login non valido, mostra un messaggio di errore
                 const errorData = await response.json();
                 setErrorMessage(errorData.message);
             }

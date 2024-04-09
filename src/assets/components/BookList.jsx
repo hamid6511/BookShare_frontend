@@ -32,7 +32,7 @@ function BookList() {
             <div className="row">
                 {books.map((book, index) => (
                     <div className="col-md-4 mb-3" key={index}>
-                        <BookCard book={book} />
+                        <BookCard book={book} showContact />
                     </div>
                 ))}
             </div>
