@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Menu from "../user/Menu";
-
+import { useUserName } from '../user/UserNameContext';
 function AllUsers() {
+    const { userName } = useUserName();
     const [users, setUsers] = useState([]);
 
     useEffect(() => {
@@ -78,7 +79,7 @@ function AllUsers() {
 
     return (
         <>
-            <Menu />
+            <Menu userName={userName} isUser={false} />
             <div className="container mt-4">
                 <h2>Gestione degli Utenti</h2>
                 <hr />
@@ -98,8 +99,8 @@ function AllUsers() {
                                 <tr key={user.id}>
                                     <td>{user.name}</td>
                                     <td>{user.email}</td>
-                                    <td>{user.comune}</td>
-                                    <td>{user.provincia}</td>
+                                    <td>{user.city}</td>
+                                    <td>{user.state}</td>
                                     <td>
                                         <button className="btn btn-warning me-2" onClick={() => handleDeactivateUser(user.id)}>Disattiva</button>
                                         <button className="btn btn-success me-2" onClick={() => handleActivateUser(user.id)}>Attiva</button>

@@ -1,0 +1,64 @@
+.home-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.bg-image {
+    background-repeat: no-repeat;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+}
+
+.container {
+    z-index: 2;
+}
+
+.title-position {
+    margin-top: 20px;
+}
+
+.book-image {
+    max-width: 100%;
+    height: auto;
+}
+
+.custom-text-white {
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .bg-image {
+        height: auto;
+        background-position: center center;
+    }
+
+    .content-wrapper {
+        padding-top: 50px;
+    }
+
+    .title-position {
+        font-size: 1.5rem;
+    }
+
+    .book-image {
+        max-width: 70%;
+        margin: 20px auto;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}

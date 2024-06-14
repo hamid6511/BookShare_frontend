@@ -1,28 +1,93 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import userAuth from '../../hooks/userAuth';
+import useAuth from '../user/UserAuth';
+import { Button, Modal } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHeart as solidHeart } from '@fortawesome/free-solid-svg-icons';
+import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons';
+import LoginForm from '../components/Login';
 
 function BookCard({ book, showContact, onDelete, isUser }) {
+    const [showLoginModal, setShowLoginModal] = useState(false);
     const [contatta, setContatta] = useState(false);
-    const { isAuthenticated } = userAuth();
+    const [isLiked, setIsLiked] = useState(false);
+    const { isAuthenticated } = useAuth();
+    const navigate = useNavigate();
 
-    const handleContatta = () => {
-        setContatta(true);
-    };
+    useEffect(() => {
+        // Controlla se l'utente ha messo mi piace a questo libro in precedenza
+        const likedBooks = JSON.parse(localStorage.getItem('likedBooks')) || [];
+        setIsLiked(likedBooks.includes(book.id));
+    }, [book.id]);
 
-    const handleContattaClick = () => {
+    const handleLikeClick = async () => {
         if (!isAuthenticated) {
-            return <Link to="/login"></Link>;
+            setShowLoginModal(true);
+            return;
         } else {
-            return <Link to="/chat"></Link>;
+            const token = localStorage.getItem('token');
+            try {
+                let response;
+                if (isLiked) {
+                    // Se il libro è già stato contrassegnato come preferito, invia una richiesta API per rimuovere il like
+                    response = await fetch(`http://localhost:5199/api/Book/unlike/${book.id.toUpperCase()}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            bookId: book.id.toUpperCase(),
+                        })
+                    });
+                    // Rimuovi il libro dai like salvati nel localStorage
+                    const likedBooks = JSON.parse(localStorage.getItem('likedBooks')) || [];
+                    const updatedLikedBooks = likedBooks.filter(id => id !== book.id);
+                    localStorage.setItem('likedBooks', JSON.stringify(updatedLikedBooks));
+                } else {
+                    // Altrimenti, invia una richiesta API per aggiungere il like
+                    response = await fetch(`http://localhost:5199/api/Book/like/${book.id.toUpperCase()}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            bookId: book.id.toUpperCase(),
+                        })
+                    });
+                    // Aggiungi il libro ai like salvati nel localStorage
+                    const likedBooks = JSON.parse(localStorage.getItem('likedBooks')) || [];
+                    localStorage.setItem('likedBooks', JSON.stringify([...likedBooks, book.id]));
+                }
+
+                // Verifica se la richiesta ha avuto successo
+                if (response.ok) {
+                    // Aggiorna lo stato del like nel componente
+                    setIsLiked(prevIsLiked => !prevIsLiked);
+                } else {
+                    // Gestisci eventuali errori nella risposta API
+                    console.error('Errore durante l\'aggiunta/rimozione del like');
+                }
+            } catch (error) {
+                console.error('Errore durante l\'invio della richiesta API', error);
+            }
         }
     };
+    const handleContattaClick = () => {
+        if (!isAuthenticated) {
+            setShowLoginModal(true); // Mostra la modal di login
+        } else {
+            navigate('/chat')
+        }
+    };
+
 
     const handleDeleteClick = () => {
         onDelete(book.id);
     };
 
-    // Funzione per abbreviare la descrizione se è troppo lunga
     const abbreviaDescrizione = (descrizione, lunghezzaMassima) => {
         if (descrizione.length > lunghezzaMassima) {
             return descrizione.substring(0, lunghezzaMassima) + '...';
@@ -32,27 +97,29 @@ function BookCard({ book, showContact, onDelete, isUser }) {
     };
 
     return (
-        <Link to={`/book/${book.id}`} className="card mb-3" style={{ textDecoration: 'none', background: '#f0f0f0', borderRadius: '15px', boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)', color: '#000' }}>
-            <img src={book.cover} className="card-img-top mx-auto mt-3 rounded" alt={book.title} style={{ width: '200px', height: '300px', objectFit: 'cover', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)' }} />
-            <div className="card-body">
-                <h5 className="card-title text-center">{book.title}</h5>
-                <p className="card-text" style={{ fontWeight: 'normal' }}>{abbreviaDescrizione(book.description, 150)}</p> {/* Imposta la lunghezza massima della descrizione a 150 caratteri */}
+        <div className="card mb-3" style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}>
+            <div className="card-body text-center">
+                <Link to={`/book/detail/${book.id}`} style={{ textDecoration: 'none', color: '#000' }}>
+                    <img src={book.cover} className="card-img-top rounded" alt={book.title} style={{ width: '200px', height: '300px', objectFit: 'cover', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)' }} />
+                    <h5 className="card-title">{book.title}</h5>
+                    <p className="card-text" style={{ fontWeight: 'normal' }}>{abbreviaDescrizione(book.shortDescription, 90)}</p>
+                </Link>
                 <div className="d-flex justify-content-between">
                     <p className="card-text"><small className="text-muted">Autore: {book.author}</small></p>
                     <p className="card-text"><small className="text-muted">Pubblicato nel {book.yearPublished}</small></p>
                 </div>
             </div>
-            <div className="card-footer text-muted d-flex justify-content-between">
+            <div className="card-footer text-muted d-flex justify-content-between align-items-center">
                 {isUser ? (
                     <>
-                        <p className="m-0">Caricato il {book.uploadDate} </p>
+                        <p className="m-0">Caricato il {new Date(book.dateAdded).toLocaleDateString()}</p>
                     </>
                 ) : (
                     <>
-                        <p className="m-0">Utente: {book.publisher}, Provincia: {book.provincia}</p>
+                        <p className="m-0">Utente: <strong>{book.userName}</strong><br /> Provincia: <strong>{book.state}</strong></p>
                         {showContact && (
                             <button
-                                className={`btn ${contatta ? 'btn-success' : 'btn-danger'}`}
+                                className={`btn ${contatta ? 'btn-success' : 'btn-primary'}`}
                                 onClick={handleContattaClick}
                                 disabled={contatta}
                             >
@@ -61,16 +128,36 @@ function BookCard({ book, showContact, onDelete, isUser }) {
                         )}
                     </>
                 )}
+
                 {isUser && (
-                    <button
+                    <> <button
                         className="btn btn-danger"
                         onClick={handleDeleteClick}
                     >
                         Elimina
                     </button>
+                        <Link to={`/books/edit/${book.id}`} className="btn btn-secondary">Modifica</Link>
+                    </>
                 )}
+                <FontAwesomeIcon
+                    icon={isLiked ? solidHeart : regularHeart}
+                    onClick={handleLikeClick}
+                    className={`heart-icon ${isLiked ? 'liked' : ''}`}
+                    style={{ color: isLiked ? 'red' : 'inherit', fontSize: '24px' }}
+                />
             </div>
-        </Link>
+
+            <Modal show={showLoginModal} onHide={() => setShowLoginModal(false)} className="modal-xl">
+                <Modal.Header closeButton>
+                    <h3 >Effettua l'accesso</h3>
+                </Modal.Header>
+                <Modal.Body >
+                    <LoginForm />
+                </Modal.Body>
+
+            </Modal>
+
+        </div>
     );
 }
 

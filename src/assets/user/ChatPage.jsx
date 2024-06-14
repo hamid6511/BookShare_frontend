@@ -1,156 +1,103 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Container, Row, Col, ListGroup, Form, Button } from 'react-bootstrap';
-import Menu from "./Menu";
+import React, { useState } from 'react';
 
 function ChatPage() {
-    const [conversationList, setConversationList] = useState([]);
-    const [selectedConversation, setSelectedConversation] = useState(null);
-    const [newMessage, setNewMessage] = useState('');
-    const messagesEndRef = useRef(null);
+    // Stato per memorizzare il testo del messaggio
+    const [messageText, setMessageText] = useState('');
 
-    useEffect(() => {
-        // Effettua la richiesta fetch al backend per ottenere le conversazioni
-        fetchConversations();
-    }, []);
-
-    // Funzione per effettuare la richiesta fetch al backend per ottenere le conversazioni
-    const fetchConversations = async () => {
-        try {
-            const response = await fetch('/api/conversations');
-            if (response.ok) {
-                const data = await response.json();
-                setConversationList(data);
-            } else {
-                console.error('Failed to fetch conversations');
-            }
-        } catch (error) {
-            console.error('Error fetching conversations:', error);
-        }
+    // Funzione per gestire l'invio del messaggio al backend
+    const sendMessage = () => {
+        // Esegui la logica per inviare il messaggio al backend
+        console.log('Invio del messaggio:', messageText);
+        // Aggiungi qui la logica per inviare il messaggio al backend tramite una chiamata API
     };
 
-    // Seleziona una conversazione dalla lista
-    const selectConversation = (conversation) => {
-        setSelectedConversation(conversation);
-        setNewMessage(''); // Resetta il campo del nuovo messaggio quando una conversazione viene selezionata
+    // Funzione per gestire l'azione di ricerca
+    const search = () => {
+        // Esegui la logica per la ricerca nel backend
+        console.log('Ricerca:', messageText);
+        // Aggiungi qui la logica per la ricerca nel backend tramite una chiamata API
     };
 
-    // Invia un nuovo messaggio
-    const handleSendMessage = async () => {
-        if (newMessage.trim() === '') return;
-
-        try {
-            // Effettua la richiesta fetch al backend per inviare il nuovo messaggio
-            const response = await fetch('/api/messages', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    conversationId: selectedConversation.id,
-                    text: newMessage,
-                }),
-            });
-            if (response.ok) {
-                // Aggiorna la lista dei messaggi della conversazione selezionata
-                const updatedConversation = { ...selectedConversation };
-                updatedConversation.messages.push({
-                    id: Date.now(), // Utilizza un ID univoco per il messaggio (puoi utilizzare una libreria come uuid)
-                    text: newMessage,
-                    user: 'CurrentUser', // Sostituisci 'CurrentUser' con il nome dell'utente attuale
-                    date: new Date().toISOString(),
-                });
-                setSelectedConversation(updatedConversation);
-                setNewMessage(''); // Resetta il campo del nuovo messaggio dopo l'invio
-            } else {
-                console.error('Failed to send message');
-            }
-        } catch (error) {
-            console.error('Error sending message:', error);
-        }
+    // Funzione per gestire l'azione di chiamata
+    const makeCall = () => {
+        // Esegui la logica per effettuare una chiamata
+        console.log('Chiamata in corso...');
+        // Aggiungi qui la logica per effettuare una chiamata tramite il backend
     };
 
-    // Scrolla fino alla fine del container dei messaggi quando viene aggiunto un nuovo messaggio
-    useEffect(() => {
-        if (messagesEndRef.current) {
-            messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
-        }
-    }, [selectedConversation]);
+    // Funzione per gestire l'azione di avvio video
+    const startVideo = () => {
+        // Esegui la logica per avviare la videochiamata
+        console.log('Avvio video...');
+        // Aggiungi qui la logica per avviare una videochiamata tramite il backend
+    };
 
     return (
-        <>
-            <Menu isUser={true} />
-            <Container>
-                <Row className="mt-5">
-                    {/* Colonna delle conversazioni */}
-                    <Col md={4}>
-                        <Container className="p-4 rounded border">
-                            <h2>Chat</h2>
-                            <ListGroup>
-                                {conversationList.map(conversation => (
-                                    <ListGroup.Item
-                                        key={conversation.id}
-                                        active={selectedConversation && selectedConversation.id === conversation.id}
-                                        onClick={() => selectConversation(conversation)}
-                                        action
-                                    >
-                                        {conversation.title}
-                                    </ListGroup.Item>
-                                ))}
-                            </ListGroup>
-                        </Container>
-                    </Col>
-
-                    {/* Colonna della conversazione selezionata */}
-                    <Col md={8}>
-                        <Container className="p-4 rounded border" style={{ minHeight: '770px', position: 'relative' }}>
-                            {selectedConversation && (
-                                <>
-                                    {/* Titolo della conversazione */}
-                                    <h2>{selectedConversation.title}</h2>
-
-                                    {/* Utente */}
-                                    <div style={{ background: '#f0f0f0', padding: '10px', marginBottom: '20px' }}>{selectedConversation.user}</div>
-
-                                    {/* Messaggi */}
-                                    <div style={{ background: '#e6e6e6', padding: '10px', maxHeight: '550px', overflowY: 'auto', marginBottom: '20px' }}>
-                                        {selectedConversation.messages.map((message, index) => (
-                                            <div key={index}>
-                                                <strong>{message.user}</strong>: {message.text} ({new Date(message.date).toLocaleString()})
-                                            </div>
-                                        ))}
-                                        <div ref={messagesEndRef}></div>
+        <main className="content">
+            <div className="container p-0">
+                <h1 className="h3 mb-3">Messages</h1>
+                <div className="card">
+                    <div className="row g-0">
+                        <div className="col-12 col-lg-5 col-xl-3 border-right">
+                            <div className="px-4 d-none d-md-block">
+                                <div className="d-flex align-items-center">
+                                    <div className="flex-grow-1">
+                                        <input type="text" className="form-control my-3" placeholder="Search..." />
                                     </div>
-
-                                    {/* Form per inviare un nuovo messaggio */}
-                                    <Form style={{ background: '#d9d9d9', padding: '10px', position: 'absolute', bottom: '10px', width: '90%' }}>
-                                        <Form.Group controlId="message" style={{ marginBottom: '0' }}>
-                                            <Row className="align-items-center">
-                                                <Col xs={11}>
-                                                    <Form.Control
-                                                        as="textarea"
-                                                        rows={1}
-                                                        placeholder="Write your message..."
-                                                        value={newMessage}
-                                                        onChange={e => setNewMessage(e.target.value)}
-                                                    />
-                                                </Col>
-                                                <Col xs={1}>
-                                                    <Button variant="primary" size="sm" className="mt-2" onClick={handleSendMessage}>Send</Button>
-                                                </Col>
-                                            </Row>
-                                        </Form.Group>
-                                    </Form>
-                                </>
-                            )}
-                        </Container>
-                    </Col>
-                </Row>
-            </Container>
-        </>
+                                </div>
+                            </div>
+                            <a href="#" className="list-group-item list-group-item-action border-0">
+                                <div className="badge bg-success float-right">5</div>
+                                <div className="d-flex align-items-start">
+                                    <img src="https://bootdey.com/img/Content/avatar/avatar5.png" className="rounded-circle mr-1" alt="Vanessa Tucker" width="40" height="40" />
+                                    <div className="flex-grow-1 ml-3">
+                                        <strong>Vanessa Tucker</strong>
+                                        <div className="small"><span className="fas fa-circle chat-online"></span> Online</div>
+                                    </div>
+                                </div>
+                            </a>
+                            {/* Altri utenti... */}
+                        </div>
+                        <div className="col-12 col-lg-7 col-xl-9">
+                            <div className="py-2 px-4 border-bottom d-none d-lg-block">
+                                <div className="d-flex align-items-center py-1">
+                                    <div className="position-relative">
+                                        <img src="https://bootdey.com/img/Content/avatar/avatar3.png" className="rounded-circle mr-1" alt="Sharon Lessman" width="40" height="40" />
+                                    </div>
+                                    <div className="flex-grow-1 pl-3">
+                                        <strong>Sharon Lessman</strong>
+                                        <div className="text-muted small"><em>Typing...</em></div>
+                                    </div>
+                                    <div>
+                                        <button className="btn btn-primary btn-lg mr-1 px-3" onClick={makeCall}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="feather feather-phone feather-lg"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                                        </button>
+                                        <button className="btn btn-info btn-lg mr-1 px-3 d-none d-md-inline-block" onClick={startVideo}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="feather feather-video feather-lg"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+                                        </button>
+                                        <button className="btn btn-light border btn-lg px-3" onClick={search}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="feather feather-search feather-lg"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="position-relative">
+                                <div className="chat-messages p-4">
+                                    {/* Messaggi della chat */}
+                                </div>
+                            </div>
+                            <div className="flex-grow-0 py-3 px-4 border-top">
+                                <div className="input-group">
+                                    <input type="text" className="form-control" placeholder="Type your message" value={messageText} onChange={(e) => setMessageText(e.target.value)} />
+                                    <button className="btn btn-primary" onClick={sendMessage}>Send</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
     );
 }
 
 export default ChatPage;
-
-
-

@@ -27,7 +27,8 @@ a:hover {
 
 body {
   margin: 0;
-  background: linear-gradient(to top right, rgb(255, 255, 255), rgb(205, 217, 221), rgb(176, 249, 199));
+  background: rgb(196, 165, 56);
+  background: linear-gradient(90deg, rgba(196, 165, 56, 1) 0%, rgba(224, 227, 164, 1) 36%, rgba(224, 227, 164, 1) 64%, rgba(196, 165, 56, 1) 100%);
   place-items: center;
   min-width: 320px;
   min-height: 100vh;

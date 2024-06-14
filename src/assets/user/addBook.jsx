@@ -1,20 +1,31 @@
-import React, { useState } from "react";
-import Menu from "./Menu";
+import React, { useState, useEffect } from "react";
+import { useUserName } from './UserNameContext';
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from 'jwt-decode';
 
-function AddBook() {
+function AddBook({ onClose, onBookAdded }) {
+    const [userId, setuserId] = useState('');
     const [bookData, setBookData] = useState({
         title: "",
         author: "",
         yearPublished: "",
         cover: "",
+        shortDescription: "",
         category: "",
-        description: "",
-        userId: "11111111-1111-1111-1111-111111111111", // Assicurati che userId sia una stringa vuota o il valore corretto iniziale
+        fullDescription: "",
+        pages: "",
     });
 
-
-    const navigate = useNavigate();
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            const decodedToken = jwtDecode(token);
+            const userIdFromToken = decodedToken["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
+            if (userIdFromToken) {
+                setuserId(userIdFromToken);
+            }
+        }
+    }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -27,18 +38,26 @@ function AddBook() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch("http://localhost:5199/api/Book/Add-book", {
+            const token = localStorage.getItem('token');
+            const bookDataWithUserId = {
+                ...bookData,
+                userId
+            };
+
+            const response = await fetch("http://localhost:5199/api/Book/AddBook", {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify(bookData)
+                body: JSON.stringify(bookDataWithUserId)
             });
             if (!response.ok) {
                 throw new Error("Failed to add book");
             }
             alert("Libro aggiunto con successo!");
-            navigate("/userBooks");
+            onClose();
+            onBookAdded();
         } catch (error) {
             console.error("Error adding book:", error);
         }
@@ -46,9 +65,8 @@ function AddBook() {
 
     return (
         <>
-            <Menu isUser={true} />
             <div className="container mt-4">
-                <h2>Aggiungi un libro</h2>
+                <h5>Compila tutti i campi per aggiungere un nuovo libro</h5>
                 <hr />
                 <div className="container mt-4" style={{ maxWidth: "800px" }}>
                     <form onSubmit={handleSubmit}>
@@ -63,6 +81,10 @@ function AddBook() {
                         <div className="mb-3">
                             <label htmlFor="yearPublished" className="form-label">Anno di pubblicazione</label>
                             <input type="number" className="form-control" id="yearPublished" name="yearPublished" value={bookData.yearPublished} onChange={handleChange} required />
+                        </div>
+                        <div className="mb-3">
+                            <label htmlFor="pages" className="form-label">Numero di pagine</label>
+                            <input type="number" className="form-control" id="pages" name="pages" value={bookData.pages} onChange={handleChange} required />
                         </div>
                         <div className="mb-3">
                             <label htmlFor="cover" className="form-label">Immagine copertina (aggiungi un link dell'immagine)</label>
@@ -106,16 +128,19 @@ function AddBook() {
                                 <option value="Teatro">Teatro</option>
                                 <option value="Economia">Economia</option>
                                 <option value="Geografia">Geografia</option>
-                            </select>                        </div>
-                        <div className="mb-3">
-                            <label htmlFor="description" className="form-label">Descrizione</label>
-                            <textarea className="form-control" id="description" name="description" value={bookData.description} onChange={handleChange} required style={{ height: "100px" }}></textarea>
+                            </select>
                         </div>
-                        <button type="submit" className="btn btn-primary">Aggiungi Libro</button>
+                        <div className="mb-3">
+                            <label htmlFor="shortDescription" className="form-label">Descrizione breve</label>
+                            <textarea className="form-control" id="shortDescription" name="shortDescription" value={bookData.shortDescription} onChange={handleChange} required style={{ height: "50px" }}></textarea>
+                        </div>
+                        <div className="mb-3">
+                            <label htmlFor="fullDescription" className="form-label">Descrizione completa</label>
+                            <textarea className="form-control" id="fullDescription" name="fullDescription" value={bookData.fullDescription} onChange={handleChange} required style={{ height: "100px" }}></textarea>
+                        </div>
+                        <button type="submit" className="btn btn-primary ml-auto">Aggiungi Libro</button>
                     </form>
-
                 </div>
-
             </div>
         </>
     );

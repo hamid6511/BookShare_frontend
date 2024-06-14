@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import useAuth from './UserAuth';
 
-function Navbar({ isUser }) {
+function Navbar({ userName, isUser }) {
     const [isProfileOpen, setProfileOpen] = useState(false);
     const navigate = useNavigate();
     const profileRef = useRef(null);
+    const { logout } = useAuth();
 
     const closeProfileMenu = (event) => {
         if (!profileRef.current.contains(event.target)) {
@@ -21,25 +23,11 @@ function Navbar({ isUser }) {
     }, []);
 
     const handleLogout = async () => {
+        // Chiama la funzione logout dalla hook useAuth
+        logout();
+        // Reindirizza l'utente alla pagina principale
         navigate('/');
-        try {
-            const response = await fetch('/api/logout', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-
-            if (response.ok) {
-                navigate('/');
-            } else {
-                console.error('Errore durante il logout');
-            }
-        } catch (error) {
-            console.error('Errore durante la chiamata API per il logout:', error);
-        }
     };
-
     return (
         <nav className="navbar navbar-expand-lg navbar-dark" style={{ backgroundColor: '#5d787d' }}>
             <div className="container">
@@ -62,14 +50,16 @@ function Navbar({ isUser }) {
                         )}
                         <li className="nav-item dropdown" ref={profileRef}>
                             <button className="nav-link dropdown-toggle" onClick={() => setProfileOpen(!isProfileOpen)}>
-                                User
+                                {userName.toUpperCase()}
+
                             </button>
+
                             <div className={`dropdown-menu ${isProfileOpen ? 'show' : ''}`}>
                                 {isUser ? (
                                     <>
                                         <Link to="/profilo" className="dropdown-item" onClick={() => setProfileOpen(false)}>Gestisci il Profilo</Link>
                                         <hr className="dropdown-divider" />
-                                        <Link to="/userBooks" className="dropdown-item" onClick={() => setProfileOpen(false)}>I miei libri</Link>
+                                        <Link to="/userBooks" className="dropdown-item" onClick={() => setProfileOpen(false)}>I tuoi libri</Link>
                                     </>
                                 ) : (
                                     <>

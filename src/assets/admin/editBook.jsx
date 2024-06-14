@@ -2,9 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Menu from "../user/Menu";
 import { useNavigate } from "react-router-dom";
+import { useUserName } from '../user/UserNameContext';
 import BookCard from "../components/BookCard"; // Importa la tua componente BookCard
 
 function EditBook() {
+    const { userName } = useUserName();
     const { id } = useParams();
     const navigate = useNavigate();
     const [book, setBook] = useState({
@@ -13,7 +15,7 @@ function EditBook() {
         category: "",
         yearPublished: "",
         cover: "",
-        description: ""
+        shortDescription: ""
     });
 
     useEffect(() => {
@@ -22,7 +24,7 @@ function EditBook() {
 
     const fetchBook = async () => {
         try {
-            const response = await fetch(`http://localhost:5199/api/Book/Get-Book-byId/${id}`, {
+            const response = await fetch(`http://localhost:5199/api/Book/GetBookById/${id}`, {
                 method: 'GET'
             });
 
@@ -48,9 +50,11 @@ function EditBook() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch(`http://localhost:5199/api/Book/Update-Book/${id}`, {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`http://localhost:5199/api/Book/Admin/UpdateBook/${id}`, {
                 method: 'PUT',
                 headers: {
+                    'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(book)
@@ -59,7 +63,7 @@ function EditBook() {
                 throw new Error("Failed to update book");
             }
             alert("Libro aggiornato con successo!");
-            navigate("/admin/books");
+            navigate(-1);
         } catch (error) {
             console.error("Error updating book:", error);
         }
@@ -67,7 +71,7 @@ function EditBook() {
 
     return (
         <>
-            <Menu isUser={false} />
+            <Menu userName={userName} isUser={true} />
             <div className="container mt-4">
                 <h2>Modifica Libro</h2>
                 <hr />
@@ -127,7 +131,10 @@ function EditBook() {
                                 </select>
                             </div><br />
 
-
+                            <div className="form-group">
+                                <label>Numero pagine</label>
+                                <input type="number" className="form-control" name="pages" value={book.pages} onChange={handleChange} required />
+                            </div><br />
                             <div className="form-group">
                                 <label>Anno Pubblicazione:</label>
                                 <input type="number" className="form-control" name="yearPublished" value={book.yearPublished} onChange={handleChange} required />
@@ -137,8 +144,12 @@ function EditBook() {
                                 <input type="text" className="form-control" name="cover" value={book.cover} onChange={handleChange} required />
                             </div><br />
                             <div className="form-group">
-                                <label>Descrizione:</label>
-                                <textarea className="form-control" name="description" value={book.description} onChange={handleChange} required />
+                                <label>Descrizione breve del libro:</label>
+                                <textarea className="form-control" name="shortDescription" value={book.shortDescription} onChange={handleChange} required />
+                            </div><br />
+                            <div className="form-group">
+                                <label>Descrizione completa del libro:</label>
+                                <textarea className="form-control" name="fullDescription" value={book.fullDescription} onChange={handleChange} required />
                             </div><br />
                             <button type="submit" className="btn btn-primary">Salva Modifiche</button>
                             <br /><br /><br />

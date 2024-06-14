@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Link } from 'react-router-dom';
 import Menu from "../user/Menu";
 import Search from "../components/Search";
+import { useUserName } from '../user/UserNameContext';
 
 function AdminBooks() {
+    const { userName } = useUserName();
     const [books, setBooks] = useState([]);
 
     useEffect(() => {
@@ -12,7 +14,7 @@ function AdminBooks() {
 
     const fetchBooks = async () => {
         try {
-            const response = await fetch("http://localhost:5199/api/Book/Get-All-Books");
+            const response = await fetch("http://localhost:5199/api/Book/GetAllBooks");
             if (!response.ok) {
                 throw new Error("Failed to fetch books");
             }
@@ -44,7 +46,7 @@ function AdminBooks() {
 
     return (
         <>
-            <Menu isUser={false} />
+            <Menu userName={userName} isUser={false} />
             <Search />
             <div className="container mt-4">
                 <h2 className="mb-3">Gestione Libri</h2>
@@ -60,6 +62,7 @@ function AdminBooks() {
                                 <th>Anno Pubblicazione</th>
                                 <th>Modifica</th>
                                 <th>Elimina</th>
+                                <th>Dettagli</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -71,10 +74,13 @@ function AdminBooks() {
                                     <td>{book.category}</td>
                                     <td>{book.yearPublished}</td>
                                     <td>
-                                        <Link to={`/admin/books/edit/${book.id}`} className="btn btn-primary">Modifica</Link>
+                                        <Link to={`/books/edit/${book.id}`} className="btn btn-primary">Modifica</Link>
                                     </td>
                                     <td>
                                         <button onClick={() => handleDeleteBook(book.id)} className="btn btn-danger">Elimina</button>
+                                    </td>
+                                    <td>
+                                        <Link to={`/book/detail/${book.id}`} className="btn btn-info">Dettagli</Link>
                                     </td>
                                 </tr>
                             ))}

@@ -1,18 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Button, Card, Carousel } from 'react-bootstrap';
+import { Container, Row, Col, Carousel } from 'react-bootstrap';
 import Search from "../components/Search";
 import Footer from "../components/Footer";
 import Menu from './Menu';
+import { useUserName } from './UserNameContext';
+import { Link } from 'react-router-dom';
 import BookCard from "../components/BookCard";
+import './Home.css'; // Importa il file CSS
 
 function Home() {
+  const { userName } = useUserName();
   const [latestBooks, setLatestBooks] = useState([]);
   const [featuredBooks, setFeaturedBooks] = useState([]);
+  const [firstName, setFirstName] = useState('');
 
-  // Funzione per caricare gli ultimi libri dal backend
+  useEffect(() => {
+    if (userName) {
+      const firstNameFromUserName = userName.split(' ')[0];
+      setFirstName(firstNameFromUserName);
+    }
+  }, [userName]);
+
   const fetchLatestBooks = async () => {
     try {
-      const response = await fetch("http://localhost:5199/api/Book/Get-All-Books"); // Modificare l'URL dell'API dopo
+      const token = localStorage.getItem('token');
+      const response = await fetch(`http://localhost:5199/api/Book/RecentBooksUploaded`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+      });
       if (!response.ok) {
         throw new Error('Errore durante il recupero degli ultimi libri');
       }
@@ -23,10 +40,15 @@ function Home() {
     }
   };
 
-  // Funzione per caricare i libri in evidenza dal backend
   const fetchFeaturedBooks = async () => {
     try {
-      const response = await fetch("http://localhost:5199/api/Book/Get-All-Books"); // Modificare l'URL dell'API dopo
+      const token = localStorage.getItem('token');
+      const response = await fetch(`http://localhost:5199/api/Book/Top10MostLikedBooks`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+      });
       if (!response.ok) {
         throw new Error('Errore durante il recupero dei libri in evidenza');
       }
@@ -44,13 +66,14 @@ function Home() {
 
   return (
     <div>
-      <Menu isUser={true} />
-      <div className="container-fluid bg-transparent py-5">
+      <Menu userName={userName} isUser={true} />
+      <div className="container-fluid py-5">
         <Container>
-          <Row className="align-items-center">
-            <Col md={6} className="text-center text-md-start mb-5">
-              <h1 className="display-4">Benvenuto su REadCycle</h1>
-              <p className="lead mb-4">Scambia i tuoi libri con altri utenti e scopri nuovi titoli!</p>
+          <Row className="align-items-center mb-5">
+            <Col md={6} className="text-center text-md-start">
+              <h1 className="display-4">Bentornato {firstName.toUpperCase()}!</h1>
+              <p className="display-6">Continua la tua avventura</p>
+              <p className="lead mb-4">scambiando i tuoi libri con altri utenti e scopri nuovi titoli!</p>
             </Col>
             <Col md={6} className="text-center">
               <Carousel>
@@ -78,42 +101,46 @@ function Home() {
               </Carousel>
             </Col>
           </Row>
-          <hr className="my-5" />
           <Row className="mb-5">
-            <Col>
-              <h2 className="mb-4">Ultime Aggiunte</h2>
-              <p className="text-muted mb-4">Scopri gli ultimi libri aggiunti alla nostra piattaforma.</p>
-              <Row xs={1} md={2} lg={3} className="g-4">
-                {latestBooks.map(book => (
-                  <Col key={book.id}>
-                    <BookCard book={book} showContact={true} />
-                  </Col>
-                ))}
-              </Row>
+            <Col md={6}>
+              <div className="card-container">
+                <h2 className="mb-4">Ultime Aggiunte</h2>
+                <p className="text-muted mb-4">Scopri gli ultimi libri aggiunti alla nostra piattaforma.</p>
+                <Carousel indicators={true} className="carousel-container">
+                  {latestBooks.map(book => (
+                    <Carousel.Item key={book.id}>
+                      <div className="d-flex justify-content-center">
+                        <BookCard book={book} userName={userName} showContact={true} className="book-card" />
+                      </div>
+                    </Carousel.Item>
+                  ))}
+                </Carousel>
+              </div>
+            </Col>
+            <Col md={6}>
+              <div className="card-container">
+                <h2 className="mb-4">Libri in Evidenza</h2>
+                <p className="text-muted mb-4">Scopri i libri più popolari e consigliati dalla nostra comunità.</p>
+                <Carousel indicators={true} className="carousel-container">
+                  {featuredBooks.map(book => (
+                    <Carousel.Item key={book.id}>
+                      <div className="d-flex justify-content-center">
+                        <BookCard book={book} userName={userName} showContact={true} className="book-card" />
+                      </div>
+                    </Carousel.Item>
+                  ))}
+                </Carousel>
+              </div>
             </Col>
           </Row>
           <Row className="mb-5">
             <Col>
-              <h2 className="mb-4">Libri in Evidenza</h2>
-              <p className="text-muted mb-4">Scopri i libri più popolari e consigliati dalla nostra comunità.</p>
-              <Row xs={1} md={2} lg={3} className="g-4">
-                {featuredBooks.map(book => (
-                  <Col key={book.id}>
-                    <BookCard book={book} showContact={true} />
-                  </Col>
-                ))}
-              </Row>
-            </Col>
-          </Row>
-          <Row className="mb-5">
-            <Col>
-              <h2 className="mb-4">Cerca nella tua zona</h2>
-              <Search />
+              <h3 className="text-muted mb-4">Vuoi vedere ulteriori libri?</h3>
+              <Link to="/BookList" className="btn btn-dark btn-lg btn-block">Esplora</Link>
             </Col>
           </Row>
         </Container>
       </div>
-      <br /><br /><br /><br />
       <Footer />
     </div>
   );
